@@ -7,7 +7,7 @@ export default function AdminProductsPage(){
     return <>
         <div className="flex justify-between items-center gap-4">
         <PageHeader>Prodcuts</PageHeader>
-        <Button>
+        <Button asChild>
             <Link href='/admin/products/new/'>Add Product</Link>
         </Button>
         </div>
