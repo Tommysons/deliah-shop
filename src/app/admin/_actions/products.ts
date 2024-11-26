@@ -4,6 +4,7 @@ import db from "@/db/db"
 import { z } from "zod"
 import fs from 'fs/promises'
 import { notFound, redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 // Schemas for validating the form input
 const fileSchema = z.instanceof(File, { message: "Required" })
@@ -59,6 +60,8 @@ export async function addProduct(prevState: unknown, formData: FormData) {
   })
 
   // Redirect to the products page
+  revalidatePath("/")
+  revalidatePath("/products")
   redirect('/admin/products')
 }
 
@@ -109,6 +112,8 @@ export async function updateProduct(id: string, prevState: unknown, formData: Fo
   })
 
   // Redirect to the products page
+  revalidatePath('/')
+  revalidatePath("/products")
   redirect('/admin/products')
 }
 
@@ -118,6 +123,9 @@ export async function toggleProductAvailability(id: string, isAvailableForPurcha
     where: { id },
     data: { isAvailableForPurchase }
   })
+
+  revalidatePath('/')
+  revalidatePath("/products")
 }
 
 // Function to delete a product
@@ -137,4 +145,7 @@ export async function deleteProduct(id: string) {
   } catch (error) {
     console.error('Error deleting product files:', error)
   }
+
+  revalidatePath('/')
+  revalidatePath("/products")
 }
