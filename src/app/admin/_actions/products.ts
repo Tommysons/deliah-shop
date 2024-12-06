@@ -22,6 +22,7 @@ const addSchema = z.object({
   image: imageSchema.refine(file => file.size > 0, "Image is required"),
 })
 
+
 // Function to handle product creation
 export async function addProduct(prevState: unknown, formData: FormData) {
   const result = addSchema.safeParse(Object.fromEntries(formData.entries()))
@@ -87,16 +88,16 @@ export async function updateProduct(id: string, prevState: unknown, formData: Fo
   let filePath = product.filePath
   if (data.file != null && data.file.size > 0) {
     // Delete the old file before saving the new one
-    await fs.unlink(product.filePath)
-    filePath = `public/products/${crypto.randomUUID()}-${data.file.name}`
-    await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()))
+    await fs.unlink(`public/${product.filePath}`)
+    filePath = `products/${crypto.randomUUID()}-${data.file.name}`
+    await fs.writeFile(`public/${filePath}`, Buffer.from(await data.file.arrayBuffer()))
   }
 
   let imagePath = product.imagePath
   if (data.image != null && data.image.size > 0) {
     // Delete the old image before saving the new one
     await fs.unlink(`public/${product.imagePath}`)
-    const imagePath = `products/${crypto.randomUUID()}-${data.image.name}` // Save image in public/products
+    imagePath = `products/${crypto.randomUUID()}-${data.image.name}` // Use the same variable (no redeclaration)
     await fs.writeFile(`public/${imagePath}`, Buffer.from(await data.image.arrayBuffer()))
   }
 
